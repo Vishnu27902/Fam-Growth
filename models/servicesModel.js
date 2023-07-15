@@ -6,6 +6,10 @@ const serviceSchema = new Schema({
         type: String,
         required: true
     },
+    type: {
+        type: String,
+        default: "service"
+    },
     description: {
         type: String,
         required: true
@@ -54,6 +58,18 @@ const serviceSchema = new Schema({
     sold: {
         type: Number,
         default: 0
+    },
+    from: {
+        type: String,
+        required: true
+    },
+    category: {
+        type: String,
+        required: true
+    },
+    owner: {
+        type: String,
+        required: true
     }
 })
 

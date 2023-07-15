@@ -3,6 +3,10 @@ const errorIndicator = require("../helpers/errorIndicator")
 const clientModel = require("../models/clientModel")
 const status = require("../helpers/statusProvider")
 const successIndicator = require("../helpers/successIndicator")
+const serviceModel = require("../models/servicesModel")
+const productModel = require("../models/productsModel")
+const orderModel = require("../models/orderModel")
+const subscriptionModel = require("../models/subscriptionModel")
 
 const getClientData = async (req, res) => {
     const { username } = req.body
@@ -69,9 +73,10 @@ const updateClientData = async (req, res) => {
 }
 
 const enableProvider = async (req, res) => {
-    const { username } = req.body
+    const { username, name, pinCode, state, country, category } = req.body
+    const business = { name, pinCode, state, country, category }
     try {
-        await clientModel.updateOne({ _id: username }, { $set: { provider: true } })
+        await clientModel.updateOne({ _id: username }, { $set: { provider: true, business } })
         successIndicator(res, status.success, "Provider Feature Enabled Successfully")
     } catch (err) {
         errorIndicator(res, status.failed, err)
@@ -81,6 +86,8 @@ const enableProvider = async (req, res) => {
 const disableProvider = async (req, res) => {
     const { username } = req.body
     try {
+        await serviceModel.deleteMany({ owner: username })
+        await productModel.deleteMany({ owner: username })
         await clientModel.updateOne({ _id: username }, { $set: { provider: false } })
         successIndicator(res, status.success, "Provider Feature Disabled Successfully")
     } catch (err) {
@@ -98,4 +105,22 @@ const deleteAccount = async (req, res) => {
     }
 }
 
-module.exports = { getClientData, updateClientData, deleteAccount, setDP, checkPassword, changePassword, enableProvider, disableProvider }
+const getOrders = async (req, res) => {
+    try {
+        const orders = await orderModel.find({})
+        successIndicator(res, status.success, "Orders fetched Successfully", orders)
+    } catch (err) {
+        errorIndicator(res, status.failed, err)
+    }
+}
+
+const getSubscriptions = async (req, res) => {
+    try {
+        const subscriptions = await subscriptionModel.find({})
+        successIndicator(res, status.success, "Orders fetched Successfully", subscriptions)
+    } catch (err) {
+        errorIndicator(res, status.failed, err)
+    }
+}
+
+module.exports = { getClientData, updateClientData, deleteAccount, setDP, checkPassword, changePassword, enableProvider, disableProvider, getOrders, getSubscriptions }
