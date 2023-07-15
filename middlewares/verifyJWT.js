@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 const errorIndicator = require("../helpers/errorIndicator")
 const status = require("../helpers/statusProvider")
+const { ACCESS_TOKEN_SECRET } = process.env
 
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers["authorization"]

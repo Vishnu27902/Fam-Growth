@@ -15,19 +15,19 @@ const login = async (req, res) => {
             errorIndicator(res, status.unauthorized, "No Such User Exists")
             return
         }
-        const checkPassword = bcrypt.compare(password, userData.password)
+        const checkPassword = await bcrypt.compare(password, userData.password)
         if (!checkPassword) {
             errorIndicator(res, status.unauthorized, "Check Your Username and Password")
             return
         }
         const accessToken = jwt.sign({ username }, ACCESS_TOKEN_SECRET, { expiresIn: "10m" })
         const refreshToken = jwt.sign({ username }, REFRESH_TOKEN_SECRET, { expiresIn: '7d' })
-        await clientModel.find({ _id: username }, { refreshToken })
+        await clientModel.updateOne({ _id: username }, { refreshToken })
         res.cookie("jwt", refreshToken, {
             httpOnly: true,
             expiresIn: 1000 * 60 * 60 * 24 * 7
         })
-        successIndicator(res, status.success, {
+        successIndicator(res, status.success, "Client Logged In Successfully",{
             username,
             accessToken
         })
@@ -73,7 +73,7 @@ const logout = async (req, res) => {
             return
         }
         await clientModel.updateOne({ refreshToken }, { $unset: { refreshToken } })
-        req.clearCookie("jwt", { maxAge: 24 * 7 * 1000 * 60 * 60, httpOnly: true })
+        res.clearCookie("jwt", { maxAge: 24 * 7 * 1000 * 60 * 60, httpOnly: true })
         successIndicator(res, status.successWithoutContent, "Cookies Cleared Successfully")
     } catch (err) {
         errorIndicator(res, status.failed, err)
@@ -86,7 +86,7 @@ const refresh = async (req, res) => {
         errorIndicator(res, status.unauthorized, "Cookie Not Found")
         return
     }
-    const refreshToken = cookie.jwt
+    const refreshToken = cookies.jwt
     const userData = await clientModel.findOne({ refreshToken }).exec()
     if (!userData) {
         errorIndicator(res, status.forbidden, "No Client with Such Refresh Token Exists")
@@ -98,7 +98,7 @@ const refresh = async (req, res) => {
             return
         }
         const accessToken = jwt.sign({ username: decoded.username }, ACCESS_TOKEN_SECRET, { expiresIn: "10m" })
-        successIndicator(res, status.success, {
+        successIndicator(res, status.success,"Access Token Refreshed Successfully", {
             username: decoded.username,
             accessToken
         })

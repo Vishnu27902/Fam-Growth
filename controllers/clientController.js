@@ -12,7 +12,7 @@ const getClientData = async (req, res) => {
             errorIndicator(res, status.unauthorized, "No Such User Exists")
             return
         }
-        successIndicator(res, status, success, "Client Data Fetched Successfully", userData)
+        successIndicator(res, status.success, "Client Data Fetched Successfully", userData)
     } catch (err) {
         errorIndicator(res, status.failed, err)
     }
@@ -21,7 +21,7 @@ const getClientData = async (req, res) => {
 const setDP = async (req, res) => {
     const { username, data } = req.body
     try {
-        await clientModel.updateOne({ _id: username }, { img: { $set: { data, alt: username } } })
+        await clientModel.updateOne({ _id: username }, { $set: { "img.data": data, "img.alt": username } })
         successIndicator(res, status.success, "Client's DP set Successfully")
     } catch (err) {
         errorIndicator(res, status.failed, err)

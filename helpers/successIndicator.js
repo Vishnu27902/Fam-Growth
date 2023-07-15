@@ -1,9 +1,9 @@
 const successIndicator = (res, status, message, data) => {
     message = message || ""
-    console.log(`Error Occurred : ${message}`)
+    console.log(message)
     res.status(status).json({
         success: true,
-        message: `Error Occurred ${message}`,
+        message,
         data
     })
 }

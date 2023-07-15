@@ -3,23 +3,23 @@ const Schema = mongoose.Schema
 
 const productSchema = new Schema({
     name: {
-        type: [String, "Product's name must be Entered"],
+        type: String,
         required: true
     },
     description: {
-        type: [String, "Product's Description must be Entered"],
+        type: String,
         required: true
     },
     thumbnail: {
-        type: [String, "Product's Thumbnail must be Entered"],
+        type: String,
         required: true
     },
     price: {
-        type: [String, "Product's Price must be Entered"],
+        type: String,
         required: true
     },
     tags: {
-        type: [Array, "Tags must be Entered"],
+        type: Array,
         required: true
     },
     rating: {
@@ -35,11 +35,11 @@ const productSchema = new Schema({
             unique: [true, "Review ID should be Unique"]
         },
         clientID: {
-            type: [String, "Client ID is mandatory "],
+            type: String,
             required: true
         },
         comment: {
-            type: [String, "Comment is mandatory"],
+            type: String,
             required: true
         },
         commentedAt: {
@@ -48,11 +48,11 @@ const productSchema = new Schema({
         }
     }],
     stock: {
-        type: [Number, "Stock Count must be Entered"],
+        type: Number,
         required: true
     },
     sold: {
-        type: [Number, "Sold Count must be Entered"],
+        type: Number,
         default: 0
     }
 })

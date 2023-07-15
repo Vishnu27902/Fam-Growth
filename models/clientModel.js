@@ -4,21 +4,20 @@ const category = require("../helpers/categoryProvider")
 
 const clientSchema = new Schema({
     firstName: {
-        type: [String, "Client's First Name must be Entered"],
+        type: String,
         required: true
     },
     lastName: {
-        type: [String, "Client's Last Name must be Entered"],
+        type: String,
         required: true
     },
     _id: {
-        type: [String, "Client's Email must be Entered"],
+        type: String,
         required: true
     },
     img: {
         data: {
-            type: String,
-            required: true
+            type: String
         },
         alt: {
             type: String,
@@ -26,19 +25,19 @@ const clientSchema = new Schema({
         }
     },
     phoneNumber: {
-        type: [Number, "Client's Contact Details must be Entered"],
+        type: Number,
         required: true
     },
     address: {
-        type: [String, "Client's Address must be Entered"],
+        type: String,
         required: true
     },
     dob: {
-        type: [String, "Client's DOB must be Entered"],
+        type:String,
         required: true
     },
     password: {
-        type: [String, "Client's Password must be Entered"],
+        type: String,
         required: true
     },
     provider: {
@@ -47,25 +46,20 @@ const clientSchema = new Schema({
     },
     business: {
         name: {
-            type: [String, "Business Name must be Entered"],
-            required: true
+            type: String
         },
         pinCode: {
-            type: [String, "Pin code must be Entered"],
-            required: true
+            type: String
         },
         state: {
-            type: [String, "State must be Entered"],
-            required: true
+            type: String
         },
         country: {
-            type: [String, "Country must be Entered"],
-            required: true
+            type: String
         },
         category: {
             type: String,
-            enum: category,
-            required: true
+            enum: category
         }
     },
     refreshToken: {

@@ -6,10 +6,8 @@ Router.route("/login").post(login)
 
 Router.route("/register").post(register)
 
-Router.route("/logout").post(logout)
+Router.route("/logout").get(logout)
 
-Router.route("/refresh").post(refresh)
-
-Router.route("/disable").get()
+Router.route("/refresh").get(refresh)
 
 module.exports = Router

@@ -3,15 +3,23 @@ const Schema = mongoose.Schema
 
 const serviceSchema = new Schema({
     name: {
-        type: [String, "Service's Name must be Entered"],
+        type: String,
         required: true
     },
     description: {
-        type: [String, "Service's Description must be Entered"],
+        type: String,
         required: true
     },
     thumbnail: {
-        type: [String, "Service's Thumbnail must be Entered"],
+        type: String,
+        required: true
+    },
+    price: {
+        type: String,
+        required: true
+    },
+    tags: {
+        type: Array,
         required: true
     },
     rating: {
@@ -27,11 +35,11 @@ const serviceSchema = new Schema({
             unique: [true, "Review ID should be Unique"]
         },
         clientID: {
-            type: [String, "Client ID is mandatory "],
+            type: String,
             required: true
         },
         comment: {
-            type: [String, "Comment is mandatory"],
+            type: String,
             required: true
         },
         commentedAt: {
@@ -40,11 +48,11 @@ const serviceSchema = new Schema({
         }
     }],
     stock: {
-        type: [Number, "Stock Count must be Entered"],
+        type: Number,
         required: true
     },
     sold: {
-        type: [Number, "Sold Count must be Entered"],
+        type: Number,
         default: 0
     }
 })
