@@ -68,6 +68,26 @@ const updateClientData = async (req, res) => {
     }
 }
 
+const enableProvider = async (req, res) => {
+    const { username } = req.body
+    try {
+        await clientModel.updateOne({ _id: username }, { $set: { provider: true } })
+        successIndicator(res, status.success, "Provider Feature Enabled Successfully")
+    } catch (err) {
+        errorIndicator(res, status.failed, err)
+    }
+}
+
+const disableProvider = async (req, res) => {
+    const { username } = req.body
+    try {
+        await clientModel.updateOne({ _id: username }, { $set: { provider: false } })
+        successIndicator(res, status.success, "Provider Feature Disabled Successfully")
+    } catch (err) {
+        errorIndicator(res, status.failed, err)
+    }
+}
+
 const deleteAccount = async (req, res) => {
     const { username } = req.body
     try {
@@ -78,4 +98,4 @@ const deleteAccount = async (req, res) => {
     }
 }
 
-module.exports = { getClientData, updateClientData, deleteAccount, setDP, checkPassword, changePassword }
+module.exports = { getClientData, updateClientData, deleteAccount, setDP, checkPassword, changePassword, enableProvider, disableProvider }

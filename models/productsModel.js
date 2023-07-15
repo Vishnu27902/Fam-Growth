@@ -29,12 +29,21 @@ const productSchema = new Schema({
         default: 1
     },
     reviews: [{
+        reviewID: {
+            type: mongoose.Schema.ObjectId,
+            required: [true, "Review ID is mandatory"],
+            unique: [true, "Review ID should be Unique"]
+        },
         clientID: {
             type: [String, "Client ID is mandatory "],
             required: true
         },
         comment: {
             type: [String, "Comment is mandatory"],
+            required: true
+        },
+        commentedAt: {
+            type: String,
             required: true
         }
     }],

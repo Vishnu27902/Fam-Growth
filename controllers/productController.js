@@ -1,4 +1,6 @@
+const mongoose = require("mongoose")
 const errorIndicator = require("../helpers/errorIndicator")
+const reviewFormatter = require("../helpers/reviewFormatter")
 const status = require("../helpers/statusProvider")
 const successIndicator = require("../helpers/successIndicator")
 const clientModel = require("../models/clientModel")
@@ -67,27 +69,39 @@ const deleteProduct = async (req, res) => {
     const { id } = req.params
     try {
         await productModel.deleteOne({ _id: id })
-        successIndicator(res,status.success,"Product Deleted Successfully")
-    }catch(err){
-        errorIndicator(res,status.failed,err)
+        successIndicator(res, status.success, "Product Deleted Successfully")
+    } catch (err) {
+        errorIndicator(res, status.failed, err)
     }
 }
 
 const addReview = async (req, res) => {
-    const {id}=req.params
-    const {username}=req.body
-    {
-        const clientData=await clientModel.findOne({_id:username}).exec()
-        if(!clientData){
-            errorIndicator(res,status.failed,"No Such User Exists")
+    const { id } = req.params
+    const { username, comment } = req.body
+    try {
+        const clientData = await clientModel.findOne({ _id: username }).exec()
+        if (!clientData) {
+            errorIndicator(res, status.failed, "No Such User Exists")
             return
         }
-        const {firstName}=clientData
+        const { firstName } = clientData
+        const reviewID = new mongoose.Types.ObjectId()
+        const review = reviewFormatter({ reviewID, firstName, comment })
+        await productModel.updateOne({ _id: id }, { $push: { reviews: review } })
+        successIndicator(res, status.success, "Review Added Successfully")
+    } catch (err) {
+        errorIndicator(res, status.failed, err)
     }
 }
 
 const deleteReview = async (req, res) => {
-
+    const { id, reviewID } = req.params
+    try {
+        await productModel.updateOne({ _id: id, "reviews._id": reviewID }, { $pull: { reviews: { _id: reviewID } } })
+        successIndicator(res.status.success, "Review Deleted Successfully")
+    } catch (err) {
+        errorIndicator(res, status.failed, err)
+    }
 }
 
 module.exports = { getProducts, getProduct, addProduct, editProduct, deleteProduct, addReview, deleteReview }
