@@ -5,7 +5,7 @@ const status = require("../helpers/statusProvider")
 const successIndicator = require("../helpers/successIndicator")
 const clientModel = require("../models/clientModel")
 const productModel = require("../models/productsModel")
-const { orderFormatter } = require("../helpers/timeFormater")
+const { orderFormatter } = require("../helpers/timeFormatter")
 const orderModel = require("../models/orderModel")
 
 const getProducts = async (req, res) => {
