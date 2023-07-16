@@ -6,15 +6,16 @@ const successIndicator = require("../helpers/successIndicator")
 const clientModel = require("../models/clientModel")
 const serviceModel = require("../models/servicesModel")
 const subscriptionModel = require("../models/subscriptionModel")
+const { subscriptionFormatter } = require("../helpers/timeFormater")
 
 const getServices = async (req, res) => {
     const { filter } = req.query
     try {
-        let services = await productModel.find({})
+        let services = await serviceModel.find({})
         if (!!filter) {
             const regex = /filter/
-            services = services.filter(product => {
-                return regex.test(product.name) || product.tags.filter((tag) => regex.test(tag)).length
+            services = services.filter(service => {
+                return regex.test(service.name) || service.tags.filter((tag) => regex.test(tag)).length
             })
         }
         successIndicator(res, status.success, "Services Data fetched Successfully", services)
@@ -37,7 +38,7 @@ const addService = async (req, res) => {
     const { username, name, description, thumbnail, price, tags, stock } = req.body
     try {
         const userData = await clientModel.findOne({ _id: username }).exec()
-        const product = {
+        const service = {
             name,
             description,
             thumbnail,
@@ -48,8 +49,8 @@ const addService = async (req, res) => {
             category: userData.business.category,
             owner: username
         }
-        await serviceModel.create(product)
-        successIndicator(res, status.success, "Product Added Successfully")
+        await serviceModel.create(service)
+        successIndicator(res, status.success, "Service Added Successfully")
     } catch (err) {
         errorIndicator(res, status.failed, err)
     }
@@ -64,7 +65,7 @@ const editService = async (req, res) => {
                 name, description, thumbnail, price, tags, stock
             }
         })
-        successIndicator(res, status.success, "Product Edited Successfully")
+        successIndicator(res, status.success, "Service Edited Successfully")
     } catch (err) {
         errorIndicator(res, status.failed, err)
     }
@@ -74,7 +75,7 @@ const deleteService = async (req, res) => {
     const { id } = req.params
     try {
         await serviceModel.deleteOne({ _id: id })
-        successIndicator(res, status.success, "Product Deleted Successfully")
+        successIndicator(res, status.success, "Service Deleted Successfully")
     } catch (err) {
         errorIndicator(res, status.failed, err)
     }
@@ -113,11 +114,11 @@ const subscribeProduct = async (req, res) => {
     const { id } = req.params
     const { username, phoneNumber, email, address, pinCode, landmark, price } = req.body
     try {
-        const { name, category, from, owner } = await serviceModel.findOne({ _id: id }).exec()
-        let subscription = { username, owner, phoneNumber, email, address, pinCode, landmark, quantity, item: name, category, from, price }
-        subscription = subscribeProduct(subscription)
+        const { from, name, category } = await serviceModel.findOne({ _id: id }).exec()
+        let subscription = { username, owner: username, phoneNumber, email, address, pinCode, landmark, item: name, category, from, price }
+        subscription = subscriptionFormatter(subscription)
         await subscriptionModel.create(subscription)
-        await productModel.updateOne({ _id: id }, { $inc: { stock: -1 } })
+        await serviceModel.updateOne({ _id: id }, { $inc: { stock: -1 } })
         successIndicator(res, status.success, "Subscribed Successfully")
     } catch (err) {
         errorIndicator(res, status.failed, err)

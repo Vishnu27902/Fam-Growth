@@ -10,6 +10,4 @@ Router.route("/:id/review").post(addReview)
 
 Router.route("/:id/review/:reviewID").delete(deleteReview)
 
-Router.route("/rating").post()
-
 module.exports = Router

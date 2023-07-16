@@ -114,8 +114,8 @@ const orderProduct = async (req, res) => {
     const { id } = req.params
     const { username, phoneNumber, email, address, pinCode, landmark, quantity, price } = req.body
     try {
-        const { name, category, from, owner } = await productModel.findOne({ _id: id }).exec()
-        let order = { username, owner, phoneNumber, email, address, pinCode, landmark, quantity, item: name, category, from, price }
+        const { name, category, from } = await productModel.findOne({ _id: id }).exec()
+        let order = { username, owner: username, phoneNumber, email, address, pinCode, landmark, quantity, item: name, category, from, price }
         order = orderFormatter(order)
         await orderModel.create(order)
         await productModel.updateOne({ _id: id }, { $inc: { stock: -1 } })
