@@ -117,6 +117,7 @@ const subscribeProduct = async (req, res) => {
         let subscription = { username, owner, phoneNumber, email, address, pinCode, landmark, quantity, item: name, category, from, price }
         subscription = subscribeProduct(subscription)
         await subscriptionModel.create(subscription)
+        await productModel.updateOne({ _id: id }, { $inc: { stock: -1 } })
         successIndicator(res, status.success, "Subscribed Successfully")
     } catch (err) {
         errorIndicator(res, status.failed, err)

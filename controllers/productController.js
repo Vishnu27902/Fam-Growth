@@ -118,6 +118,7 @@ const orderProduct = async (req, res) => {
         let order = { username, owner, phoneNumber, email, address, pinCode, landmark, quantity, item: name, category, from, price }
         order = orderFormatter(order)
         await orderModel.create(order)
+        await productModel.updateOne({ _id: id }, { $inc: { stock: -1 } })
         successIndicator(res, status.success, "Order Placed Successfully")
     } catch (err) {
         errorIndicator(res, status.failed, err)
